@@ -1,38 +1,343 @@
-.App {
-  text-align: center;
-}
+/* ── Reset & Base ───────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #f0f7f0;
+  color: #1a2e1a;
   min-height: 100vh;
+}
+
+/* ── App Layout ─────────────────────────────────────── */
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.25rem 3rem;
+}
+
+/* ── Header ─────────────────────────────────────────── */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 0 1.75rem;
+  border-bottom: 2px solid #c8e6c9;
+  margin-bottom: 2rem;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.header-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.app-header h1 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #1b5e20;
+  letter-spacing: -0.5px;
+}
+
+.add-btn {
+  background: #2e7d32;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.add-btn:hover { background: #1b5e20; }
+
+/* ── Plant Grid ─────────────────────────────────────── */
+.plant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ── Empty State ────────────────────────────────────── */
+.empty-state {
+  grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0.75rem;
+  padding: 4rem 0;
+  color: #558b2f;
+}
+.empty-icon { font-size: 4rem; }
+.empty-state p { font-size: 1.05rem; }
+
+/* ── Plant Card ─────────────────────────────────────── */
+.plant-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.25rem 1.1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  border: 2px solid transparent;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.plant-card.healthy { border-color: #a5d6a7; }
+.plant-card.overdue { border-color: #d7ccc8; background: #fdf6f3; }
+.plant-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.11); }
+
+.plant-card-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.plant-icon-wrap {
+  display: flex;
+  align-items: flex-end;
+}
+
+/* ── Water Button ───────────────────────────────────── */
+.water-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  transition: transform 0.15s, filter 0.15s;
+  filter: drop-shadow(0 2px 3px rgba(30,136,229,0.25));
+}
+.water-btn:hover {
+  transform: scale(1.15);
+  filter: drop-shadow(0 3px 6px rgba(30,136,229,0.45));
+}
+.water-btn:active { transform: scale(0.97); }
+
+/* ── Plant Info ─────────────────────────────────────── */
+.plant-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.plant-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1b5e20;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.plant-card.overdue .plant-name { color: #5d3a1a; }
+
+.plant-detail {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+}
+.detail-label {
+  color: #757575;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.detail-value {
+  color: #37474f;
+  font-weight: 600;
+}
+.detail-value.overdue-text { color: #bf360c; }
+
+.overdue-badge {
+  display: inline-block;
+  background: #ffccbc;
+  color: #bf360c;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 20px;
+  margin-top: 0.1rem;
+  width: fit-content;
+}
+
+/* ── Card Actions ───────────────────────────────────── */
+.plant-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.25rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.edit-btn, .delete-btn {
+  flex: 1;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.edit-btn {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+.edit-btn:hover { background: #c8e6c9; }
+
+.delete-btn {
+  background: #fce4ec;
+  color: #c62828;
+}
+.delete-btn:hover { background: #f8bbd0; }
+
+/* ── Modal ──────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.38);
+  display: flex;
+  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  z-index: 100;
+  padding: 1rem;
 }
 
-.App-link {
-  color: #61dafb;
+.modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  animation: modal-in 0.18s ease;
+}
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
 }
+.modal-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1b5e20;
+}
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #757575;
+  padding: 0 0.2rem;
+}
+.modal-close:hover { color: #333; }
+
+/* ── Form ───────────────────────────────────────────── */
+.modal-form { display: flex; flex-direction: column; gap: 1.1rem; }
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #37474f;
+}
+.form-group input[type="text"],
+.form-group input[type="date"] {
+  border: 1.5px solid #cfd8dc;
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.95rem;
+  color: #1a2e1a;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+.form-group input:focus { border-color: #2e7d32; }
+
+.field-error {
+  font-size: 0.8rem;
+  color: #c62828;
+}
+
+/* ── Frequency Control ──────────────────────────────── */
+.freq-control {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.freq-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid #a5d6a7;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.freq-btn:hover:not(:disabled) { background: #c8e6c9; }
+.freq-btn:disabled { opacity: 0.35; cursor: default; }
+.freq-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1b5e20;
+  min-width: 70px;
+  text-align: center;
+}
+
+/* ── Modal Footer ───────────────────────────────────── */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+}
+.cancel-btn {
+  background: #f5f5f5;
+  color: #555;
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.cancel-btn:hover { background: #e0e0e0; }
+
+.save-btn {
+  background: #2e7d32;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1.3rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.save-btn:hover { background: #1b5e20; }
+
