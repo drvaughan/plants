@@ -64,6 +64,12 @@ export default function App() {
     );
   }
 
+  function handlePhotoUpdate(id, dataUrl) {
+    setPlants(prev =>
+      prev.map(p => (p.id === id ? { ...p, photo: dataUrl } : p))
+    );
+  }
+
   function handleAddNew() {
     setEditingPlant(null);
     setModalOpen(true);
@@ -94,6 +100,7 @@ export default function App() {
             onWater={() => handleWater(plant.id)}
             onEdit={() => handleEdit(plant)}
             onDelete={() => handleDelete(plant.id)}
+            onPhotoUpdate={(dataUrl) => handlePhotoUpdate(plant.id, dataUrl)}
           />
         ))}
       </main>

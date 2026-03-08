@@ -1,4 +1,25 @@
-import React from 'react';
+import React, { useRef } from 'react';
+
+const MAX_PX = 400; // longest side cap before storing
+
+function processImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const { naturalWidth: w, naturalHeight: h } = img;
+      const scale = Math.min(1, MAX_PX / Math.max(w, h));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(w * scale);
+      canvas.height = Math.round(h * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL('image/jpeg', 0.82));
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
 
 function PlantIcon({ overdue }) {
   const color = overdue ? '#8B4513' : '#2e7d32';
@@ -58,8 +79,9 @@ function RaindropButton({ onClick }) {
   );
 }
 
-export default function PlantCard({ plant, overdue, onWater, onEdit, onDelete }) {
-  const { name, frequency, lastWatered } = plant;
+export default function PlantCard({ plant, overdue, onWater, onEdit, onDelete, onPhotoUpdate }) {
+  const { name, frequency, lastWatered, photo } = plant;
+  const fileInputRef = useRef(null);
 
   const displayDate = lastWatered
     ? new Date(lastWatered + 'T00:00:00').toLocaleDateString(undefined, {
@@ -69,11 +91,41 @@ export default function PlantCard({ plant, overdue, onWater, onEdit, onDelete })
       })
     : 'Never';
 
+  async function handleFileChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    e.target.value = '';
+    try {
+      const dataUrl = await processImage(file);
+      onPhotoUpdate(dataUrl);
+    } catch {
+      // silently ignore processing errors
+    }
+  }
+
   return (
     <div className={`plant-card ${overdue ? 'overdue' : 'healthy'}`}>
       <div className="plant-card-top">
         <div className="plant-icon-wrap">
-          <PlantIcon overdue={overdue} />
+          {photo
+            ? <img src={photo} alt={name} className="plant-photo" />
+            : <PlantIcon overdue={overdue} />
+          }
+          <button
+            className="photo-upload-btn"
+            onClick={() => fileInputRef.current.click()}
+            title="Upload plant photo"
+            aria-label="Upload plant photo"
+          >
+            📷
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
         </div>
         <RaindropButton onClick={onWater} />
       </div>
